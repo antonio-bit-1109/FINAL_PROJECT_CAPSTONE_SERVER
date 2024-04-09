@@ -78,34 +78,10 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			var service = new SessionService();
 			Session session = service.Create(options);
 
-
-
-
-
-			//foreach (var Item in request.ListaItems)
-			//{
-
-			//	ProdottoVeduto prodottoVenduto = new ProdottoVeduto()
-			//	{
-			//		IdProdotto = Item.idProdotto,
-			//		IdUtente = Convert.ToInt32(userIdFromClaimToken),
-			//		Quantita = Item.quantita,
-			//		Data = DateTime.Now,
-			//		PrezzoTotTransazione = Item.prezzoProdotto * Item.quantita
-			//	};
-
-			//	_context.ProdottiVenduti.Add(prodottoVenduto);
-			//	_context.SaveChanges();
-			//}
-
 			return Ok(new { sessionId = session.Id });
 			// Ora hai i claims dell'utente e puoi usarli per le tue operazioni
 		}
-		//else
-		//{
-		//	return BadRequest();
-		//	// Gestisci il caso in cui uno o più claims non sono presenti
-		//}
+
 
 
 	}

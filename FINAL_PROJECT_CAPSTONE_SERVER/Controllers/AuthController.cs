@@ -111,6 +111,14 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+				var emailGiaPresente = _db.Utenti.FirstOrDefault(x => x.Email == utente.email);
+
+				if (emailGiaPresente != null)
+				{
+					return BadRequest(new { message = " Email già presente. Cambia la tua mail." });
+				}
+
+
 				Utente NuovoUtente = new Utente
 				{
 					Nome = utente.nome,
