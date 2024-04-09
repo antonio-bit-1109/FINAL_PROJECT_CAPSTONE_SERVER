@@ -22,6 +22,36 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Abbonamento", b =>
+                {
+                    b.Property<int>("IdAbbonamento")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAbbonamento"));
+
+                    b.Property<string>("DescrizioneAbbonamento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImmagineAbbonamento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NomeAbbonamento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("PrezzoAbbonamento")
+                        .HasColumnType("float");
+
+                    b.Property<string>("StripePriceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdAbbonamento");
+
+                    b.ToTable("Abbonamenti");
+                });
+
             modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Allenamento", b =>
                 {
                     b.Property<int>("IdAllenamento")
@@ -201,34 +231,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
                     b.ToTable("ProdottiVenduti");
                 });
 
-            modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Trainer", b =>
-                {
-                    b.Property<int>("IdTrainer")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTrainer"));
-
-                    b.Property<string>("Cognome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImmagineProfilo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Qualifica")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdTrainer");
-
-                    b.ToTable("Trainers");
-                });
-
             modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Utente", b =>
                 {
                     b.Property<int>("IdUtente")
@@ -245,7 +247,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("IdTrainer")
+                    b.Property<int?>("IdAbbonamento")
                         .HasColumnType("int");
 
                     b.Property<string>("ImmagineProfilo")
@@ -266,7 +268,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
 
                     b.HasKey("IdUtente");
 
-                    b.HasIndex("IdTrainer");
+                    b.HasIndex("IdAbbonamento");
 
                     b.ToTable("Utenti");
                 });
@@ -330,11 +332,16 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
 
             modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Utente", b =>
                 {
-                    b.HasOne("FINAL_PROJECT_CAPSTONE_SERVER.Models.Trainer", "Trainer")
+                    b.HasOne("FINAL_PROJECT_CAPSTONE_SERVER.Models.Abbonamento", "Abbonamento")
                         .WithMany("Utenti")
-                        .HasForeignKey("IdTrainer");
+                        .HasForeignKey("IdAbbonamento");
 
-                    b.Navigation("Trainer");
+                    b.Navigation("Abbonamento");
+                });
+
+            modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Abbonamento", b =>
+                {
+                    b.Navigation("Utenti");
                 });
 
             modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Allenamento", b =>
@@ -352,11 +359,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
             modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Prodotto", b =>
                 {
                     b.Navigation("ProdottiVenduti");
-                });
-
-            modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Trainer", b =>
-                {
-                    b.Navigation("Utenti");
                 });
 
             modelBuilder.Entity("FINAL_PROJECT_CAPSTONE_SERVER.Models.Utente", b =>

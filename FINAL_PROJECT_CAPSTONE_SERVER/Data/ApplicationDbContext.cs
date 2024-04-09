@@ -20,7 +20,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Data
 
 		public DbSet<AllenamentoCompletato> AllenamentiCompletati { get; set; }
 
-		public DbSet<Trainer> Trainers { get; set; }
+		public DbSet<Abbonamento> Abbonamenti { get; set; }
 
 	}
 

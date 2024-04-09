@@ -23,12 +23,12 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 		[Required]
 		public string Ruolo { get; set; } = "utente";
 
-		[ForeignKey("Trainer")]
-		public int? IdTrainer { get; set; }
+		[ForeignKey("Abbonamento")]
+		public int? IdAbbonamento { get; set; }
 
 		public string Email { get; set; }
 
-		public virtual Trainer Trainer { get; set; }
+		public virtual Abbonamento Abbonamento { get; set; }
 
 		//public virtual ICollection<Allenamento> Allenamenti { get; set; }
 		public virtual ICollection<ProdottoVeduto> ProdottiAcquisati { get; set; }
