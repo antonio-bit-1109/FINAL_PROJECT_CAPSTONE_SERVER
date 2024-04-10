@@ -28,6 +28,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 
 		public string Email { get; set; }
 
+		public string? StripeCustomerId { get; set; }
+
 		public virtual Abbonamento Abbonamento { get; set; }
 
 		//public virtual ICollection<Allenamento> Allenamenti { get; set; }

@@ -30,8 +30,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		public ActionResult CreateCheckoutSession([FromBody] CreateCheckoutSessionRequest request)
 		{
 
-
-
 			var domain = "http://localhost:5173/"; // URL del tuo frontend React
 
 			// Crea la lista degli articoli per la sessione di checkout
