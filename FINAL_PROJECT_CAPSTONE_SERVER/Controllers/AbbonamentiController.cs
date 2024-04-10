@@ -136,11 +136,11 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			return Ok(new { id = session.Id });
 		}
 
-		[HttpGet("AbbonamentiDisponibili")]
-		public IActionResult AbbonamentiDisponibili()
-		{
+		//[HttpGet("AbbonamentiDisponibili")]
+		//public IActionResult AbbonamentiDisponibili()
+		//{
 
-		}
+		//}
 	}
 }
 
