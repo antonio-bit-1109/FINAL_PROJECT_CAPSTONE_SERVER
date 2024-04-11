@@ -65,6 +65,10 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			// Crea opzioni per la sessione di checkout
 			var options = new SessionCreateOptions
 			{
+				//Metadata = new Dictionary<string, string>
+				//{
+				//	{ "AcquistoProdotti", "true" },
+				//},
 				PaymentMethodTypes = new List<string> { "card" },
 				CustomerEmail = userEmail,
 				LineItems = lineItems,

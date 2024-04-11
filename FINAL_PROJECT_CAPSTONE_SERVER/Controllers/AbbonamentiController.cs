@@ -174,6 +174,14 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 						var abbonamentoId = metadata["abbonamentoId"];
 						var durataAbbonamento = metadata["durataAbbonamento"];
 
+						//var acquistoProdotti = metadata["AcquistoProdotti"];
+
+						// se il metadata AcquistoProdotti è null allora sto ricevendo il webhook per l'acquisto dell'abbonamento
+						// altrimenti se questo metadata esiste sto ricevendo il webhook per l'acquisto di un prodotto semplice
+
+
+						//if (acquistoProdotti == null)
+						//{
 						var utenteCheEffettuaAcquisto = _db.Utenti.FirstOrDefault(t => t.IdUtente == Convert.ToInt32(userId));
 
 						// se questo è il primo abbonamento sottoscritto dall utente allora tutto apposto
@@ -200,7 +208,13 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 							_db.SaveChanges();
 						}
 
-						return Ok(new { message = "Tutto Apposto!!" });
+						return Ok(new { message = "Abbonamento acquistato e sottoscritto dall'utente" });
+						//}
+						//else
+						//{
+
+						//}
+
 					}
 
 				}
