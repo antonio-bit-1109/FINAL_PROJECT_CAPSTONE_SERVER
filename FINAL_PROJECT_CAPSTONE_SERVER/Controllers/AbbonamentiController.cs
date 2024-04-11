@@ -29,6 +29,21 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 			if (ModelState.IsValid)
 			{
+				// al momento della creazione di un piano d'abbonamento, se l'utente è gia premium,
+				// quindi sottoscritto ad un abbonamento, non può crearne un altro 
+				var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+				var UtenteLoggato = _db.Utenti.FirstOrDefault(u => u.IdUtente == Convert.ToInt32(userIdClaim));
+
+				if (UtenteLoggato != null)
+				{
+					if (UtenteLoggato.IdAbbonamento != null && UtenteLoggato.IsPremium == true)
+					{
+						return BadRequest(new { message = "Hai già un abbonamento attivo, disdici quello Attualmente in uso prima di proseguire." });
+					}
+				}
+
+
+
 				Abbonamento nuovoAbbonamento = new Abbonamento
 				{
 					NomeAbbonamento = subscriptionPlan.NomeAbbonamento,
@@ -161,7 +176,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 						var utenteCheEffettuaAcquisto = _db.Utenti.FirstOrDefault(t => t.IdUtente == Convert.ToInt32(userId));
 
-						if (utenteCheEffettuaAcquisto != null)
+						// se questo è il primo abbonamento sottoscritto dall utente allora tutto apposto
+						if (utenteCheEffettuaAcquisto != null && utenteCheEffettuaAcquisto.IsPremium == false)
 						{
 							utenteCheEffettuaAcquisto.IsPremium = true;
 							utenteCheEffettuaAcquisto.IdAbbonamento = Convert.ToInt32(abbonamentoId);
@@ -170,7 +186,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 							_db.Utenti.Update(utenteCheEffettuaAcquisto);
 							_db.SaveChanges();
-						};
+						}
+
 
 						var AbbonamentoAcquistato = _db.Abbonamenti.FirstOrDefault(t => t.IdAbbonamento == Convert.ToInt32(abbonamentoId));
 
