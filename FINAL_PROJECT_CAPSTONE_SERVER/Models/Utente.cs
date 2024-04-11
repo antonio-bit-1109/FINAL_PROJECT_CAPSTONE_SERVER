@@ -28,7 +28,13 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 
 		public string Email { get; set; }
 
-		public string? StripeCustomerId { get; set; }
+		//public string? StripeCustomerId { get; set; }
+
+		public bool IsPremium { get; set; } = false;
+
+		public DateTime? DataInizioAbbonamento { get; set; }
+		public DateTime? DataFineAbbonamento { get; set; }
+
 
 		public virtual Abbonamento Abbonamento { get; set; }
 

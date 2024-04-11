@@ -30,12 +30,21 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAbbonamento"));
 
+                    b.Property<DateTime?>("DataFineAbbonamento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataInizioAbbonamento")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("DescrizioneAbbonamento")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImmagineAbbonamento")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DurataAbbonamento")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("NomeAbbonamento")
                         .IsRequired()
@@ -43,9 +52,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
 
                     b.Property<double>("PrezzoAbbonamento")
                         .HasColumnType("float");
-
-                    b.Property<string>("StripePriceId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdAbbonamento");
 
@@ -243,6 +249,12 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DataFineAbbonamento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataInizioAbbonamento")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -254,6 +266,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsPremium")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -264,9 +279,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
 
                     b.Property<string>("Ruolo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StripeCustomerId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdUtente");

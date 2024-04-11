@@ -6,6 +6,6 @@
 		public string Description { get; set; }
 		public long Price { get; set; }
 
-		public string Durata { get; set; }
+		public int DurataAbbonamento { get; set; }
 	}
 }

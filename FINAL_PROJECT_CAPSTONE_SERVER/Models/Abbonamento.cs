@@ -17,9 +17,16 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 		[Required]
 		public double PrezzoAbbonamento { get; set; }
 
-		public string? StripePriceId { get; set; }
+		public bool IsActive { get; set; } = false;
 
-		public string? ImmagineAbbonamento { get; set; } = "default.jpg";
+		public int DurataAbbonamento { get; set; }
+
+		public DateTime? DataInizioAbbonamento { get; set; }
+		public DateTime? DataFineAbbonamento { get; set; }
+
+		//public string? StripePriceId { get; set; }
+
+		//public string? ImmagineAbbonamento { get; set; } = "default.jpg";
 
 		public virtual ICollection<Utente> Utenti { get; set; }
 	}
