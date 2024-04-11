@@ -22,7 +22,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		}
 
 
-		//Endpoint per creare un nuovo piano di abbonamento
+		// in questo endpoint creo un nuovo abbonamento partendo dai dati forniti dal frontend e ritorno l'id dell abbonamentno creato
 		[HttpPost("CreazionePianoAbbonamento")]
 		public async Task<IActionResult> CreateSubscriptionPlan([FromBody] SubscriptionPlanDTO subscriptionPlan)
 		{
@@ -50,7 +50,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 
 
-
+		// passo id dell'abbonamento creato alla sessione di pagamento di stripe, da qui ricavo l'abbonamento dal db, 
+		//ricavo idutente dal claim e utente loggato dal db e inserisco i dati dell abbonamento da acquistare e dell utente nel lineitemoption di stripe
+		// i dati quali id abbonamento , idutente , e durata li salvo come metadata della sessione di strpe li riprenderò poi nel webhook
 
 		[HttpPost("CreaSessionPagamento/{IdAbbonamento}")]
 		public ActionResult CreateCheckoutSession([FromRoute] int IdAbbonamento)
@@ -127,6 +129,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		}
 
 
+
+		// se il pagamento va a buon fine nel webhook imposto , sull utente che ha effettuato l'acquisto ilabbonamento acquistato e data inizio e fine abbonamento
+		// sull abbonamento imposto invece che è attivo e data inizio e fine abbonamento
 		[HttpPost("webhook")]
 		public async Task<IActionResult> StripeWebhook()
 		{
@@ -158,6 +163,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 						if (utenteCheEffettuaAcquisto != null)
 						{
+							utenteCheEffettuaAcquisto.IsPremium = true;
 							utenteCheEffettuaAcquisto.IdAbbonamento = Convert.ToInt32(abbonamentoId);
 							utenteCheEffettuaAcquisto.DataInizioAbbonamento = DateTime.Now;
 							utenteCheEffettuaAcquisto.DataFineAbbonamento = DateTime.Now.AddDays(Convert.ToInt32(durataAbbonamento));
