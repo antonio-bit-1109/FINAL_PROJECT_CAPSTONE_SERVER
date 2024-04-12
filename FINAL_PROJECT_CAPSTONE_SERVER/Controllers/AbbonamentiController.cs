@@ -280,40 +280,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 							}
 
 							return BadRequest();
-							//string? abbonamentoId = metadata["abbonamentoId"];
-							//string? durataAbbonamento = metadata["durataAbbonamento"];
 
-							//string? idProdottiVendutiString = metadata["idProdottiVenduti"];
-
-
-
-
-							//if (idProdottiVendutiString != null)
-							//{
-
-							//	// Converti la stringa in una lista di interi
-							//	List<int> idProdottiVenduti = idProdottiVendutiString.Split(',').Select(int.Parse).ToList();
-
-							//	foreach (var item in idProdottiVenduti)
-							//	{
-							//		var ConfermaAcquistoprodotto = _db.ProdottiVenduti.FirstOrDefault(t => t.IdProdottoVeduto == item);
-
-							//		if (ConfermaAcquistoprodotto != null)
-							//		{
-							//			ConfermaAcquistoprodotto.IsPagato = true;
-							//			_db.ProdottiVenduti.Update(ConfermaAcquistoprodotto);
-							//			_db.SaveChanges();
-							//		}
-
-							//	}
-							//}
 
 						}
-
-
-
-
-
 
 					}
 
