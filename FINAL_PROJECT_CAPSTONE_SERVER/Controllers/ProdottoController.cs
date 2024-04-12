@@ -4,8 +4,6 @@ using FINAL_PROJECT_CAPSTONE_SERVER.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 {
@@ -115,54 +113,54 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		}
 
 
-		[HttpPost("CreaProdottoAcquistato")]
-		public IActionResult ProdottoAcquistatoSuccess([FromBody] CarrelloOttimizzatoDTO carrello)
-		{
-			var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti);
-			var usernameClaim = User.FindFirst(JwtRegisteredClaimNames.Name);
-			var roleClaim = User.FindFirst(ClaimTypes.Role);
+		//[HttpPost("CreaProdottoAcquistato")]
+		//public IActionResult ProdottoAcquistatoSuccess([FromBody] CarrelloOttimizzatoDTO carrello)
+		//{
+		//	var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti);
+		//	var usernameClaim = User.FindFirst(JwtRegisteredClaimNames.Name);
+		//	var roleClaim = User.FindFirst(ClaimTypes.Role);
 
-			if (userIdClaim != null && usernameClaim != null && roleClaim != null)
-			{
-				var userIdFromClaimToken = userIdClaim.Value;
-				//var usernameFromClaimToken = usernameClaim.Value;
-				//var roleFromClaimToken = roleClaim.Value;
+		//	if (userIdClaim != null && usernameClaim != null && roleClaim != null)
+		//	{
+		//		var userIdFromClaimToken = userIdClaim.Value;
+		//		//var usernameFromClaimToken = usernameClaim.Value;
+		//		//var roleFromClaimToken = roleClaim.Value;
 
 
-				if (carrello != null && carrello.Prodotti != null)
-				{
+		//		if (carrello != null && carrello.Prodotti != null)
+		//		{
 
-					if (ModelState.IsValid)
-					{
-						foreach (var prodotto in carrello.Prodotti)
-						{
+		//			if (ModelState.IsValid)
+		//			{
+		//				foreach (var prodotto in carrello.Prodotti)
+		//				{
 
-							ProdottoVeduto prodottoVenduto = new ProdottoVeduto()
-							{
-								IdProdotto = prodotto.IdProdotto,
-								IdUtente = Convert.ToInt32(userIdFromClaimToken),
-								Quantita = prodotto.quantita,
-								Data = DateTime.Now,
-								PrezzoTotTransazione = prodotto.prezzoProdotto * prodotto.quantita
-							};
+		//					ProdottoVeduto prodottoVenduto = new ProdottoVeduto()
+		//					{
+		//						IdProdotto = prodotto.IdProdotto,
+		//						IdUtente = Convert.ToInt32(userIdFromClaimToken),
+		//						Quantita = prodotto.quantita,
+		//						Data = DateTime.Now,
+		//						PrezzoTotTransazione = prodotto.prezzoProdotto * prodotto.quantita
+		//					};
 
-							_context.ProdottiVenduti.Add(prodottoVenduto);
-							_context.SaveChanges();
+		//					_context.ProdottiVenduti.Add(prodottoVenduto);
+		//					_context.SaveChanges();
 
-						}
-						return Ok();
-					}
-					return BadRequest("modello non valido.");
+		//				}
+		//				return Ok();
+		//			}
+		//			return BadRequest("modello non valido.");
 
-				}
+		//		}
 
-				return BadRequest("carrello vuoto");
+		//		return BadRequest("carrello vuoto");
 
-			}
+		//	}
 
-			return Unauthorized();
+		//	return Unauthorized();
 
-		}
+		//}
 		//// GET: Prodotto/5
 		//[HttpGet("{id}")]
 		//public async Task<ActionResult<Prodotto>> GetProdotto(int id)

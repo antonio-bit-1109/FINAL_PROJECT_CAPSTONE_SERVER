@@ -143,6 +143,12 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			// Ora hai i claims dell'utente e puoi usarli per le tue operazioni
 		}
 
+		//[HttpPost("AnnullaAbbonamento")]
+		//public async Task<IActionResult> DisdiciAbbonamento()
+		//{
+
+		//}
+
 
 
 		// se il pagamento va a buon fine nel webhook imposto , sull utente che ha effettuato l'acquisto ilabbonamento acquistato e data inizio e fine abbonamento
@@ -170,50 +176,109 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 						var metadata = session.Metadata;
 
-						var userId = metadata["userId"];
-						var abbonamentoId = metadata["abbonamentoId"];
-						var durataAbbonamento = metadata["durataAbbonamento"];
-
-						//var acquistoProdotti = metadata["AcquistoProdotti"];
-
-						// se il metadata AcquistoProdotti è null allora sto ricevendo il webhook per l'acquisto dell'abbonamento
-						// altrimenti se questo metadata esiste sto ricevendo il webhook per l'acquisto di un prodotto semplice
-
-
-						//if (acquistoProdotti == null)
-						//{
-						var utenteCheEffettuaAcquisto = _db.Utenti.FirstOrDefault(t => t.IdUtente == Convert.ToInt32(userId));
-
-						// se questo è il primo abbonamento sottoscritto dall utente allora tutto apposto
-						if (utenteCheEffettuaAcquisto != null && utenteCheEffettuaAcquisto.IsPremium == false)
+						if (metadata != null)
 						{
-							utenteCheEffettuaAcquisto.IsPremium = true;
-							utenteCheEffettuaAcquisto.IdAbbonamento = Convert.ToInt32(abbonamentoId);
-							utenteCheEffettuaAcquisto.DataInizioAbbonamento = DateTime.Now;
-							utenteCheEffettuaAcquisto.DataFineAbbonamento = DateTime.Now.AddDays(Convert.ToInt32(durataAbbonamento));
+							//string userId = metadata["userId"];
+							if (metadata.TryGetValue("userId", out string userId))
+							{
+								if (metadata.TryGetValue("abbonamentoId", out string abbonamentoId))
+								{
+									if (metadata.TryGetValue("durataAbbonamento", out string durataAbbonamento))
+									{
+										var utenteCheEffettuaAcquisto = _db.Utenti.FirstOrDefault(t => t.IdUtente == Convert.ToInt32(userId));
 
-							_db.Utenti.Update(utenteCheEffettuaAcquisto);
-							_db.SaveChanges();
+
+
+										if (utenteCheEffettuaAcquisto != null && utenteCheEffettuaAcquisto.IsPremium == false)
+										{
+											utenteCheEffettuaAcquisto.IsPremium = true;
+											utenteCheEffettuaAcquisto.IdAbbonamento = Convert.ToInt32(abbonamentoId);
+											utenteCheEffettuaAcquisto.DataInizioAbbonamento = DateTime.Now;
+											utenteCheEffettuaAcquisto.DataFineAbbonamento = DateTime.Now.AddDays(Convert.ToInt32(durataAbbonamento));
+
+											_db.Utenti.Update(utenteCheEffettuaAcquisto);
+											_db.SaveChanges();
+										}
+
+
+										var AbbonamentoAcquistato = _db.Abbonamenti.FirstOrDefault(t => t.IdAbbonamento == Convert.ToInt32(abbonamentoId));
+
+										if (AbbonamentoAcquistato != null)
+										{
+											AbbonamentoAcquistato.IsActive = true;
+											AbbonamentoAcquistato.DataInizioAbbonamento = DateTime.Now;
+											AbbonamentoAcquistato.DataFineAbbonamento = DateTime.Now.AddDays(Convert.ToInt32(durataAbbonamento));
+											_db.Abbonamenti.Update(AbbonamentoAcquistato);
+											_db.SaveChanges();
+										}
+
+										return Ok(new { message = "Abbonamento acquistato e sottoscritto dall'utente" });
+
+
+									}
+								}
+
+
+
+
+							}
+							else if (metadata.TryGetValue("idProdottiVenduti", out string idProdottiVendutiString))
+							{
+								// Converti la stringa in una lista di interi
+								List<int> idProdottiVenduti = idProdottiVendutiString.Split(',').Select(int.Parse).ToList();
+
+								foreach (var item in idProdottiVenduti)
+								{
+									var ConfermaAcquistoprodotto = _db.ProdottiVenduti.FirstOrDefault(t => t.IdProdottoVeduto == item);
+
+									if (ConfermaAcquistoprodotto != null)
+									{
+										ConfermaAcquistoprodotto.IsPagato = true;
+										_db.ProdottiVenduti.Update(ConfermaAcquistoprodotto);
+										_db.SaveChanges();
+									}
+
+								}
+
+								return Ok(new { message = "Prodotto acquistato correttamente dall'utente!" });
+
+							}
+
+							return BadRequest();
+							//string? abbonamentoId = metadata["abbonamentoId"];
+							//string? durataAbbonamento = metadata["durataAbbonamento"];
+
+							//string? idProdottiVendutiString = metadata["idProdottiVenduti"];
+
+
+
+
+							//if (idProdottiVendutiString != null)
+							//{
+
+							//	// Converti la stringa in una lista di interi
+							//	List<int> idProdottiVenduti = idProdottiVendutiString.Split(',').Select(int.Parse).ToList();
+
+							//	foreach (var item in idProdottiVenduti)
+							//	{
+							//		var ConfermaAcquistoprodotto = _db.ProdottiVenduti.FirstOrDefault(t => t.IdProdottoVeduto == item);
+
+							//		if (ConfermaAcquistoprodotto != null)
+							//		{
+							//			ConfermaAcquistoprodotto.IsPagato = true;
+							//			_db.ProdottiVenduti.Update(ConfermaAcquistoprodotto);
+							//			_db.SaveChanges();
+							//		}
+
+							//	}
+							//}
+
 						}
 
 
-						var AbbonamentoAcquistato = _db.Abbonamenti.FirstOrDefault(t => t.IdAbbonamento == Convert.ToInt32(abbonamentoId));
 
-						if (AbbonamentoAcquistato != null)
-						{
-							AbbonamentoAcquistato.IsActive = true;
-							AbbonamentoAcquistato.DataInizioAbbonamento = DateTime.Now;
-							AbbonamentoAcquistato.DataFineAbbonamento = DateTime.Now.AddDays(Convert.ToInt32(durataAbbonamento));
-							_db.Abbonamenti.Update(AbbonamentoAcquistato);
-							_db.SaveChanges();
-						}
 
-						return Ok(new { message = "Abbonamento acquistato e sottoscritto dall'utente" });
-						//}
-						//else
-						//{
 
-						//}
 
 					}
 

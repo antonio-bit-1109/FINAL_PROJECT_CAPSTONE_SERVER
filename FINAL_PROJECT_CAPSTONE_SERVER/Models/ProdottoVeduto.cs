@@ -24,6 +24,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 		[Required]
 		public double PrezzoTotTransazione { get; set; }
 
+		public bool IsPagato { get; set; } = false;
+
 		public virtual Prodotto Prodotto { get; set; }
 		public virtual Utente Utente { get; set; }
 	}

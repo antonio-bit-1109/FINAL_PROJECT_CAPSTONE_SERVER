@@ -3,6 +3,7 @@ using FINAL_PROJECT_CAPSTONE_SERVER.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
@@ -29,6 +30,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		[HttpPost("create-session")]
 		public ActionResult CreateCheckoutSession([FromBody] CreateCheckoutSessionRequest request)
 		{
+			//arrivo DTO carrello ottimizzato 
 
 			var domain = "http://localhost:5173/"; // URL del tuo frontend React
 
@@ -36,7 +38,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			var lineItems = request
 				.ListaItems.Select(item => new SessionLineItemOptions
 				{
-
 
 					PriceData = new SessionLineItemPriceDataOptions
 					{
@@ -61,14 +62,36 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 				userEmail = "default@default.com";
 			}
 
+			var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
 
+			List<int> IdprodottiVenduti = new List<int>();
+
+			foreach (var item in request.ListaItems)
+			{
+				ProdottoVeduto prodottoVenduto = new ProdottoVeduto
+				{
+					IdProdotto = item.idProdotto,
+					IdUtente = Convert.ToInt32(userIdClaim),
+					Quantita = item.quantita,
+					Data = DateTime.Now,
+					PrezzoTotTransazione = item.prezzoProdotto * item.quantita,
+					IsPagato = false
+
+				};
+
+				_context.ProdottiVenduti.Add(prodottoVenduto);
+				_context.SaveChanges();
+				IdprodottiVenduti.Add(prodottoVenduto.IdProdottoVeduto);
+			}
+
+			string IdprodottiVendutiString = string.Join(",", IdprodottiVenduti);
 			// Crea opzioni per la sessione di checkout
 			var options = new SessionCreateOptions
 			{
-				//Metadata = new Dictionary<string, string>
-				//{
-				//	{ "AcquistoProdotti", "true" },
-				//},
+				Metadata = new Dictionary<string, string>
+				{
+					{ "idProdottiVenduti" ,IdprodottiVendutiString }
+				},
 				PaymentMethodTypes = new List<string> { "card" },
 				CustomerEmail = userEmail,
 				LineItems = lineItems,
