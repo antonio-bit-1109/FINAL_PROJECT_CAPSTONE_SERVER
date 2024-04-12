@@ -143,11 +143,46 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			// Ora hai i claims dell'utente e puoi usarli per le tue operazioni
 		}
 
-		//[HttpPost("AnnullaAbbonamento")]
-		//public async Task<IActionResult> DisdiciAbbonamento()
-		//{
+		[HttpPost("AnnullaAbbonamento")]
+		public async Task<IActionResult> DisdiciAbbonamento()
+		{
 
-		//}
+			var IdUtenteClaim = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+
+			var utente = _db.Utenti.FirstOrDefault(t => t.IdUtente == Convert.ToInt32(IdUtenteClaim));
+
+			if (utente != null)
+			{
+
+				var AbbonamentoSottoscritto = _db.Abbonamenti.Where(t => t.IdAbbonamento == utente.IdAbbonamento).FirstOrDefault();
+
+				if (utente.IdAbbonamento == null && utente.IsPremium == false && AbbonamentoSottoscritto == null)
+				{
+					return Ok(new { message = "Non sono presenti Abbonamenti attivi." });
+				}
+
+				if (AbbonamentoSottoscritto != null)
+				{
+
+					utente.IdAbbonamento = null;
+					utente.IsPremium = false;
+					_db.Utenti.Update(utente);
+					await _db.SaveChangesAsync();
+
+					AbbonamentoSottoscritto.IsActive = false;
+					AbbonamentoSottoscritto.DurataAbbonamento = 0;
+					_db.Abbonamenti.Update(AbbonamentoSottoscritto);
+					await _db.SaveChangesAsync();
+
+					return Ok(new { message = "Abbonamento Annullato con Successo." });
+				}
+
+				return BadRequest();
+			}
+
+
+			return BadRequest();
+		}
 
 
 
