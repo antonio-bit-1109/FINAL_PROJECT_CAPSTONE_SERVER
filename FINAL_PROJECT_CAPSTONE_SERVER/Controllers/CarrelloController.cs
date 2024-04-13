@@ -1,14 +1,16 @@
 ﻿using FINAL_PROJECT_CAPSTONE_SERVER.Data;
 using FINAL_PROJECT_CAPSTONE_SERVER.Models;
+using FINAL_PROJECT_CAPSTONE_SERVER.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Stripe.Checkout;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 {
-
+	[Authorize]
 	[Route("[controller]")]
 	[ApiController]
 	public class CarrelloController : ControllerBase
@@ -26,7 +28,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 		}
 
-		[Authorize]
+
 		[HttpPost("create-session")]
 		public ActionResult CreateCheckoutSession([FromBody] CreateCheckoutSessionRequest request)
 		{
@@ -108,7 +110,38 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		}
 
 
+		[HttpGet("storicoAcquisti/{idUtente}")]
+		public async Task<IActionResult> GetStoricoAcquisti(string idUtente)
+		{
 
+			var ProdottiAcquistati = await _context.ProdottiVenduti.Where(t => t.IdUtente == Convert.ToInt32(idUtente))
+				.Include(t => t.Prodotto).Select(a => new ProdottoAcquistatoDTO
+				{
+					nomeProdotto = a.Prodotto.NomeProdotto,
+					PrezzoProdotto = a.Prodotto.PrezzoProdotto,
+					ImmagineProdotto = a.Prodotto.ImmagineProdotto,
+					quantita = a.Quantita,
+					dataAcquisto = a.Data,
+					PrezzoTotaleTransazione = a.PrezzoTotTransazione
+				}).ToListAsync();
+
+			var idUtenteLoggato = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+
+			if (idUtenteLoggato != null)
+			{
+				if (Convert.ToInt32(idUtenteLoggato) == Convert.ToInt32(idUtente))
+				{
+					if (idUtente != null)
+					{
+						return Ok(new { data = ProdottiAcquistati });
+					}
+				}
+			}
+
+
+
+			return BadRequest();
+		}
 	}
 }
 
