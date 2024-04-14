@@ -8,6 +8,8 @@
 		public int serie { get; set; }
 		public int ripetizioni { get; set; }
 
+		public int recupero { get; set; }
+
 		public int difficolta { get; set; }
 
 		public bool IsStrenght { get; set; }

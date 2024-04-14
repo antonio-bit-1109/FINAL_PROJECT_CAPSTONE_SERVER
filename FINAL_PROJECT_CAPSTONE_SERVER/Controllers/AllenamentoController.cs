@@ -45,6 +45,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 						nomeEsercizio = eia.Esercizio.NomeEsercizio,
 						immagineEsercizio = eia.Esercizio.ImmagineEsercizio,
 						serie = eia.Esercizio.Serie,
+						recupero = eia.Esercizio.TempoRecupero,
 						ripetizioni = eia.Esercizio.Ripetizioni,
 						IsStrenght = eia.Esercizio.IsStrenght,
 						difficolta = eia.Esercizio.Difficolta

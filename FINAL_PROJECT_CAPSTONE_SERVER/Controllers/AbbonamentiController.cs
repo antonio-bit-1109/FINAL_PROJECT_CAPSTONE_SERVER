@@ -166,6 +166,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 					utente.IdAbbonamento = null;
 					utente.IsPremium = false;
+					utente.DataInizioAbbonamento = null;
+					utente.DataFineAbbonamento = null;
 					_db.Utenti.Update(utente);
 					await _db.SaveChangesAsync();
 
