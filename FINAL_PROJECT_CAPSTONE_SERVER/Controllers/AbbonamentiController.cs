@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 {
+
 	[Route("[controller]")]
 	[ApiController]
 	public class AbbonamentiController : ControllerBase
