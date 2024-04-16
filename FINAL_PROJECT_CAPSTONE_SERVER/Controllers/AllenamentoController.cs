@@ -75,7 +75,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 				Allenamento allenamento = new Allenamento
 				{
 					NomeAllenamento = ModelloAllenamento.NomeAllenamento,
-					DurataTotaleAllenamento = (ModelloAllenamento.DurataTotaleAllenamento / 60),
+					DurataTotaleAllenamento = (ModelloAllenamento.DurataTotaleAllenamento),
 					TotaleRipetizioni = ModelloAllenamento.RipetizioniTotali,
 					TotaleSerie = ModelloAllenamento.SerieTotali
 
