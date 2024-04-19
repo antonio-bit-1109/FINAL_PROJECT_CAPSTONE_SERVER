@@ -91,6 +91,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					if (UtenteLoggato.Password == password)
 					{
 						return Ok(new { message = "Password Corrispondenti." });
+
 					}
 					return BadRequest(new { message = "Password non Corrispondenti." });
 				}
@@ -115,6 +116,10 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 					if (UtenteLoggato != null)
 					{
+						if (datiUtente.Nome == "" && datiUtente.Cognome == "" && datiUtente.Email == "")
+						{
+							return BadRequest(new { message = "I campi da Modificare sono tutti vuoti." });
+						}
 
 						if (datiUtente.Nome != null)
 						{
@@ -163,6 +168,33 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					}
 				}
 			}
+			return BadRequest();
+		}
+
+
+		[HttpDelete("cancellaAccount/{idUtente}")]
+		public async Task<IActionResult> deleteAccount(int idUtente)
+		{
+			var IdUtenteLoggato = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+
+			if (IdUtenteLoggato != null)
+			{
+				if (Convert.ToInt32(IdUtenteLoggato) == idUtente)
+				{
+					var UtenteLoggato = await _db.Utenti.Where(t => t.IdUtente == idUtente).FirstOrDefaultAsync();
+
+
+					if (UtenteLoggato != null)
+					{
+						_db.Remove(UtenteLoggato);
+						await _db.SaveChangesAsync();
+
+						return Ok(new { message = "Account Cancellato con Successo." });
+					}
+
+				}
+			}
+
 			return BadRequest();
 		}
 	}
