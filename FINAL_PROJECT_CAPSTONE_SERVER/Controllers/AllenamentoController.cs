@@ -48,7 +48,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 						recupero = eia.Esercizio.TempoRecupero,
 						ripetizioni = eia.Esercizio.Ripetizioni,
 						IsStrenght = eia.Esercizio.IsStrenght,
-						difficolta = eia.Esercizio.Difficolta
+						difficolta = eia.Esercizio.Difficolta,
+						met = eia.Esercizio.MET
 
 					}).ToList()
 				})

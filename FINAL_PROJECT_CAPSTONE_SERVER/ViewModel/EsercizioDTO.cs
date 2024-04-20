@@ -13,5 +13,7 @@
 		public int difficolta { get; set; }
 
 		public bool IsStrenght { get; set; }
+
+		public int met { get; set; }
 	}
 }
