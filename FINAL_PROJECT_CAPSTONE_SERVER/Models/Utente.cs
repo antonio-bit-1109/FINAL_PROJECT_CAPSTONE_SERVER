@@ -18,6 +18,12 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 		public string Password { get; set; }
 
 		[Required]
+		public int Altezza { get; set; }
+
+		[Required]
+		public double Peso { get; set; }
+
+		[Required]
 		public string? ImmagineProfilo { get; set; } = "default.jpg";
 
 		[Required]
@@ -35,6 +41,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 		public DateTime? DataInizioAbbonamento { get; set; }
 		public DateTime? DataFineAbbonamento { get; set; }
 
+		public double? TotaleKcalConsumate { get; set; }
 
 		public virtual Abbonamento Abbonamento { get; set; }
 

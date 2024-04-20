@@ -9,5 +9,8 @@
 
 		public string email { get; set; }
 
+		public double Peso { get; set; }
+
+		public int Altezza { get; set; }
 	}
 }

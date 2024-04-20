@@ -15,5 +15,7 @@
 		public int RipetizioniEsercizio { get; set; }
 
 		public string ParteCorpoEsercizio { get; set; }
+
+		public string MET { get; set; }
 	}
 }

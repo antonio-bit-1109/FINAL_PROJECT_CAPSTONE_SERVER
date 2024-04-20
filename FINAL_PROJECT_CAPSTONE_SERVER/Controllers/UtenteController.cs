@@ -116,7 +116,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 					if (UtenteLoggato != null)
 					{
-						if (datiUtente.Nome == "" && datiUtente.Cognome == "" && datiUtente.Email == "")
+						if (datiUtente.Nome == "" && datiUtente.Cognome == "" && datiUtente.Email == "" && datiUtente.Altezza == "" && datiUtente.Peso == "")
 						{
 							return BadRequest(new { message = "I campi da Modificare sono tutti vuoti." });
 						}
@@ -158,6 +158,33 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 								UtenteLoggato.Email = datiUtente.Email;
 							}
 
+
+						}
+
+						if (datiUtente.Altezza != null)
+						{
+							if (datiUtente.Altezza == "")
+							{
+								UtenteLoggato.Altezza = UtenteLoggato.Altezza;
+							}
+							else
+							{
+								UtenteLoggato.Altezza = Convert.ToInt32(datiUtente.Altezza);
+							}
+
+
+						}
+
+						if (datiUtente.Peso != null)
+						{
+							if (datiUtente.Peso == "")
+							{
+								UtenteLoggato.Peso = UtenteLoggato.Peso;
+							}
+							else
+							{
+								UtenteLoggato.Peso = Convert.ToDouble(datiUtente.Peso);
+							}
 
 						}
 

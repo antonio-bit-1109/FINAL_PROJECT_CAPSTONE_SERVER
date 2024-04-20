@@ -34,6 +34,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 		[Required]
 		public string ParteDelCorpoAllenata { get; set; }
 
+		public int MET { get; set; }
+
 		public double DurataSingoloEsercizioInMinuti
 		{
 			get

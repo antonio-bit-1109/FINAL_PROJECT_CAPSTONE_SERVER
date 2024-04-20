@@ -84,7 +84,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					Serie = esercizio.SerieEsercizio,
 					Ripetizioni = esercizio.RipetizioniEsercizio,
 					ParteDelCorpoAllenata = esercizio.ParteCorpoEsercizio,
-					ImmagineEsercizio = "gif-default.gif"
+					ImmagineEsercizio = "gif-default.gif",
+					MET = Convert.ToInt32(esercizio.MET)
 				};
 
 				_context.Esercizi.Add(nuovoEsercizio);

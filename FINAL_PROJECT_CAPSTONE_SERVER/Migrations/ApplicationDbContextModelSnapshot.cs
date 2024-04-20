@@ -155,6 +155,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
                     b.Property<bool>("IsStrenght")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MET")
+                        .HasColumnType("int");
+
                     b.Property<string>("NomeEsercizio")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -248,6 +251,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUtente"));
 
+                    b.Property<int>("Altezza")
+                        .HasColumnType("int");
+
                     b.Property<string>("Cognome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -280,9 +286,15 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Peso")
+                        .HasColumnType("float");
+
                     b.Property<string>("Ruolo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("TotaleKcalConsumate")
+                        .HasColumnType("float");
 
                     b.HasKey("IdUtente");
 

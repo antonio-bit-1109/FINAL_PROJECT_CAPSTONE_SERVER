@@ -127,6 +127,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					ImmagineProfilo = "default.jpg",
 					Ruolo = "utente",
 					Email = utente.email,
+					Altezza = utente.Altezza,
+					Peso = utente.Peso
 
 				};
 
