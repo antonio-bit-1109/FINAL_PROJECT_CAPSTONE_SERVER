@@ -134,5 +134,24 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 			return BadRequest(new { messaggio = "qualcosa è andato storto" });
 		}
+
+		[HttpPost("cambiaSerie/{idEsercizio}")]
+		public async Task<IActionResult> changeSerie([FromBody] int serie, [FromRoute] int idEsercizio)
+		{
+			if (ModelState.IsValid)
+			{
+				var esercizio = _context.Esercizi.Where(t => t.IdEsercizio == idEsercizio).FirstOrDefault();
+
+				if (esercizio != null)
+				{
+					esercizio.Serie = serie;
+					_context.Update(esercizio);
+					await _context.SaveChangesAsync();
+					return Ok(new { message = "modifica effettuata con successo." });
+				}
+
+			}
+			return BadRequest();
+		}
 	}
 }
