@@ -38,6 +38,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					NomeAllenamento = a.NomeAllenamento,
 					DurataTotaleAllenamento = a.DurataTotaleAllenamento,
 					SerieTotali = a.TotaleSerie,
+					DIfficoltaMedia = a.EserciziInAllenamento.Any() ? a.EserciziInAllenamento.Sum(eia => eia.Esercizio.Difficolta) / a.EserciziInAllenamento.Count() : 0,
 					RipetizioniTotali = a.TotaleRipetizioni,
 					Esercizi = a.EserciziInAllenamento.Select(eia => new EsercizioDTO
 					{

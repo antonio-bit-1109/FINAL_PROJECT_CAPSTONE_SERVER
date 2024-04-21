@@ -8,6 +8,8 @@
 		public int SerieTotali { get; set; }
 		public int RipetizioniTotali { get; set; }
 
+		public int DIfficoltaMedia { get; set; }
+
 		public List<EsercizioDTO> Esercizi { get; set; }
 	}
 }
