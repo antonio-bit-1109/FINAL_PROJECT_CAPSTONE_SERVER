@@ -1,6 +1,7 @@
 ﻿using FINAL_PROJECT_CAPSTONE_SERVER.Data;
 using FINAL_PROJECT_CAPSTONE_SERVER.Models;
 using FINAL_PROJECT_CAPSTONE_SERVER.ViewModel;
+using FINAL_PROJECT_CAPSTONE_SERVER.ViewModel.allenamentoFiltratoDTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,51 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		}
 
 
+		// ricerca allenamenti filtrati per nome e per difficoltà
+		[HttpPost("AllenamentoFiltrato")]
+		public async Task<IActionResult> allenamentoFiltrato([FromBody] ParametriNomeDifficoltaDTO datas)
+		{
+
+			if (ModelState.IsValid)
+			{
+				var allenamenti = await _context.Allenamenti
+
+				.Where(t =>
+					(datas.NomeAllenamentoInput == null || t.NomeAllenamento.Contains(datas.NomeAllenamentoInput))
+					&&
+					(datas.difficoltainput == null || (t.EserciziInAllenamento.Any() && t.EserciziInAllenamento.Sum(eia => eia.Esercizio.Difficolta) / t.EserciziInAllenamento.Count() == datas.difficoltainput)))
+				.Include(t => t.EserciziInAllenamento)
+				.ThenInclude(es => es.Esercizio)
+				.Select(a => new ModelloAllenamentoSpecificoPerGET_DTO
+				{
+					IdAllenamento = a.IdAllenamento,
+					NomeAllenamento = a.NomeAllenamento,
+					DurataTotaleAllenamento = a.DurataTotaleAllenamento,
+					SerieTotali = a.TotaleSerie,
+					DIfficoltaMedia = a.EserciziInAllenamento.Any() ? a.EserciziInAllenamento.Sum(eia => eia.Esercizio.Difficolta) / a.EserciziInAllenamento.Count() : 0,
+					RipetizioniTotali = a.TotaleRipetizioni,
+					Esercizi = a.EserciziInAllenamento.Select(eia => new EsercizioDTO
+					{
+
+						nomeEsercizio = eia.Esercizio.NomeEsercizio,
+						immagineEsercizio = eia.Esercizio.ImmagineEsercizio,
+						serie = eia.Esercizio.Serie,
+						recupero = eia.Esercizio.TempoRecupero,
+						ripetizioni = eia.Esercizio.Ripetizioni,
+						IsStrenght = eia.Esercizio.IsStrenght,
+						difficolta = eia.Esercizio.Difficolta,
+						met = eia.Esercizio.MET
+
+					}).ToList()
+				})
+				  .ToListAsync();
+
+				return Ok(allenamenti);
+			}
+
+			return BadRequest();
+
+		}
 
 
 		//questo metodo riceve in entrata i dati degli esercizi tramite post,
