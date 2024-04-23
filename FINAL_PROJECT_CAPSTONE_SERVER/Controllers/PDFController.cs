@@ -48,13 +48,13 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 				foreach (var esercizio in AllenamentoComplete.Allenamento.EserciziInAllenamento)
 				{
 					eserciziHtml.AppendLine($@"
-					<li style='list-style: none; margin: 10px 0; line-height: 30px;'>
+					<div style='margin: 10px 0; line-height: 30px;'>
 						<span style='display: inline-block; width: 20%; font-weight: 600; font-size: 18px;'>{esercizio.Esercizio.NomeEsercizio}</span>
-						<span style='display: inline-block; width: 20%; font-size: 16px;'>{esercizio.Esercizio.ParteDelCorpo}</span>
-						<span style='display: inline-block; width: 20%; font-size: 20px;'>{esercizio.Esercizio.Serie}</span>
-						<span style='display: inline-block; width: 20%;'>X</span>
-						<span style='display: inline-block; width: 20%; font-size: 20px;'>{esercizio.Esercizio.Ripetizioni}</span>
-					</li>");
+						<div style='display: inline-block; width: 20%; font-size: 16px; margin-left: 5px;margin-right: 5px;'>{esercizio.Esercizio.ParteDelCorpo}</div>
+						<span style='display: inline-block; width: 20%; font-size: 21px; font-weight: 800;'>{esercizio.Esercizio.Serie}</span>
+						<div style='display: inline-block; width: 20%; font-size: 20px; margin-left: 5px;margin-right: 5px;'>X</div>
+						<span style='display: inline-block; width: 20%; font-size: 21px;font-weight: 800;'>{esercizio.Esercizio.Ripetizioni}</span>
+					</div>");
 
 				}
 
@@ -69,7 +69,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 									-
 									<span style='font-size: 20px'>{ora} </span>
 								</div>
-								<div>
+								<div style='margin-bottom : 10px'>
 									<h2 style='font-size: 24px; font-weight: bold;'>{NomeAllenamento.ToUpper()}</h2>
 									<h4> <span style='margin-right: 4px;'>Difficoltà:</span>{difficolta}</h4>
 								</div>
@@ -79,9 +79,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 									<p style='margin: 0;'><span style='font-size: 22px;'>Ripetizioni Totali:</span> <span style='font-size: 20px; font-style: italic; margin-left: 10px;'>{TotaleReps}</span></p>
 								</div>
 								<div style='color: #333;'>
-									<ul style='padding: 0;'>
+									<div style='padding: 0;'>
 										{eserciziHtml}
-									</ul>
+									</div>
 								</div>
 							</div>";
 
