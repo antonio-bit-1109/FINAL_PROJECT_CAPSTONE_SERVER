@@ -169,8 +169,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		// presente nel claim del cookie di autenticazione  
 		// e la data del momento della creazione vengono salvati in un nuovo record di tipo allenamentiCompletati,
 		// che salva un record sul fatto che l'utente abbia concluso quell'allenamento
-		[HttpPost("AllenamentoCompletato/{IdAllenamentoCompletato?}")]
-		public IActionResult PostAllenamentoCompletato([FromRoute] int? IdAllenamentoCompletato, [FromBody] IdAllenamentoArrivatoDaAllenamentoNellaLIstaConclusoDTO? request)
+		[HttpPost("AllenamentoCompletato")]
+		public async Task<IActionResult> PostAllenamentoCompletato([FromBody] IdAllenamentoArrivatoDaAllenamentoNellaLIstaConclusoDTO request)
 		{
 			if (ModelState.IsValid)
 			{
@@ -181,13 +181,14 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					AllenamentoCompletato allenamentoCompletato = new AllenamentoCompletato
 					{
 						IdUtente = Convert.ToInt32(userIdClaim.Value),
-						IdAllenamento = IdAllenamentoCompletato.HasValue ? IdAllenamentoCompletato.Value : request.IdAllenamento,
+						IdAllenamento = request.IdAllenamento,
 						DataEOraDelCompletamento = DateTime.Now
 
 					};
 
 					_context.AllenamentiCompletati.Add(allenamentoCompletato);
-					_context.SaveChanges();
+					await _context.SaveChangesAsync();
+
 
 					return Ok(allenamentoCompletato);//prendo idallenamento , prendo idutente dai claims e creo nuovo record in tabella allenamenticompletato
 				}
@@ -197,6 +198,36 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			}
 
 			return StatusCode(400, new { Message = "Errore nell'inserimento dell' allenamento come allenamento completato." });
+
+		}
+
+		[HttpPost("aggiornaKcalConsumateUtente")]
+		public async Task<IActionResult> aggiornaKcal([FromBody] double kcalBruciate)
+		{
+
+			if (ModelState.IsValid)
+			{
+				var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti);
+
+				if (userIdClaim == null)
+				{
+					return BadRequest();
+				}
+
+				var utente = await _context.Utenti.Where(t => t.IdUtente == Convert.ToInt32(userIdClaim.Value)).FirstOrDefaultAsync();
+
+				if (utente == null)
+				{
+					return BadRequest();
+				}
+
+				utente.TotaleKcalConsumate += Convert.ToDouble(kcalBruciate);
+				_context.Update(utente);
+				await _context.SaveChangesAsync();
+				return Ok();
+			}
+
+			return BadRequest();
 
 		}
 

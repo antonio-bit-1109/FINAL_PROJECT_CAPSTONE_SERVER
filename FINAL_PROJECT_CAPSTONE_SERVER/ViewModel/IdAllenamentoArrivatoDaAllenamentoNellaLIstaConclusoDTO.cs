@@ -3,5 +3,7 @@
 	public class IdAllenamentoArrivatoDaAllenamentoNellaLIstaConclusoDTO
 	{
 		public int IdAllenamento { get; set; }
+
+
 	}
 }

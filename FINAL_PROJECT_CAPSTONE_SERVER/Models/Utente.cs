@@ -41,7 +41,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 		public DateTime? DataInizioAbbonamento { get; set; }
 		public DateTime? DataFineAbbonamento { get; set; }
 
-		public double? TotaleKcalConsumate { get; set; }
+		public double TotaleKcalConsumate { get; set; } = 0;
 
 		public virtual Abbonamento Abbonamento { get; set; }
 
