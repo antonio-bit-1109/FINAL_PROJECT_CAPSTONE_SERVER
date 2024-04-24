@@ -15,11 +15,13 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 	{
 		private readonly ApplicationDbContext _db;
 		private readonly IConfiguration _configuration;
+		private readonly EmailSender _emailsender;
 
-		public AbbonamentiController(ApplicationDbContext db, IConfiguration configuration)
+		public AbbonamentiController(ApplicationDbContext db, IConfiguration configuration, EmailSender emailsender)
 		{
 			_db = db;
 			_configuration = configuration;
+			_emailsender = emailsender;
 		}
 
 
@@ -226,7 +228,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 										var utenteCheEffettuaAcquisto = _db.Utenti.FirstOrDefault(t => t.IdUtente == Convert.ToInt32(userId));
 
 
-
 										if (utenteCheEffettuaAcquisto != null && utenteCheEffettuaAcquisto.IsPremium == false)
 										{
 											utenteCheEffettuaAcquisto.IsPremium = true;
@@ -248,6 +249,18 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 											AbbonamentoAcquistato.DataFineAbbonamento = DateTime.Now.AddDays(Convert.ToInt32(durataAbbonamento));
 											_db.Abbonamenti.Update(AbbonamentoAcquistato);
 											_db.SaveChanges();
+										}
+
+										if (utenteCheEffettuaAcquisto != null && AbbonamentoAcquistato != null)
+										{
+											string htmlMessage = $"<p> Grazie per l'acquisto dell'abbonamento, {utenteCheEffettuaAcquisto.Nome}!</p> " +
+																$"<p> Hai selezionato ed acquistato &quot;{AbbonamentoAcquistato.NomeAbbonamento}  &quot; </p>" +
+																$" <p> il periodo Premium ha inizio il: <strong> {AbbonamentoAcquistato.DataInizioAbbonamento} </strong> </p>" +
+																$" <p> ed avrà fine il giorno :  <strong> {AbbonamentoAcquistato.DataFineAbbonamento} </strong>  </p>" +
+																$"<p></p>" +
+																$"<p> Il costo totale è stato: {AbbonamentoAcquistato.PrezzoAbbonamento} € </p>";
+
+											await _emailsender.SendEmailAsync(utenteCheEffettuaAcquisto.Email, "Grazie Per l'acquisto dell'abbonamento!", htmlMessage);
 										}
 
 										return Ok(new { message = "Abbonamento acquistato e sottoscritto dall'utente" });
