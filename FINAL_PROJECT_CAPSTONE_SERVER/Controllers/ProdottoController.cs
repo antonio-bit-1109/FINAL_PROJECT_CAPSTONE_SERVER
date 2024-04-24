@@ -85,12 +85,11 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					return Ok(ProdottoAppenaCreato);
 				}
 
-				return BadRequest(new { messaggio = "Esercizio Appena Creato è null." });
+				return BadRequest(new { messaggio = "Prodotto Appena Creato è null." });
 			}
 
 			return BadRequest(new { messaggio = "qualcosa è andato storto" });
 		}
-
 
 		[HttpDelete("cancellaProdotto/{idProdotto}")]
 		public async Task<IActionResult> CancellaProdotto([FromRoute] string idProdotto)
@@ -112,131 +111,196 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			return BadRequest("idProdotto non arrivato.");
 		}
 
+		[HttpPost("ModificaProdotto/{idProdotto}")]
+		public async Task<IActionResult> editProdotto([FromBody] ModificaProdottoDTO datiProdottoModifica, [FromRoute] int idProdotto)
+		{
+			if (datiProdottoModifica == null)
+			{
+				return BadRequest();
+			}
 
-		//[HttpPost("CreaProdottoAcquistato")]
-		//public IActionResult ProdottoAcquistatoSuccess([FromBody] CarrelloOttimizzatoDTO carrello)
-		//{
-		//	var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti);
-		//	var usernameClaim = User.FindFirst(JwtRegisteredClaimNames.Name);
-		//	var roleClaim = User.FindFirst(ClaimTypes.Role);
+			if (ModelState.IsValid)
+			{
 
-		//	if (userIdClaim != null && usernameClaim != null && roleClaim != null)
-		//	{
-		//		var userIdFromClaimToken = userIdClaim.Value;
-		//		//var usernameFromClaimToken = usernameClaim.Value;
-		//		//var roleFromClaimToken = roleClaim.Value;
+				var ProdottoDaModificare = await _context.Prodotti.FindAsync(idProdotto);
+
+				if (ProdottoDaModificare == null)
+				{
+					return BadRequest();
+				}
+
+				if (datiProdottoModifica.ProdottoNome == "")
+				{
+					ProdottoDaModificare.NomeProdotto = ProdottoDaModificare.NomeProdotto;
+				}
+				else
+				{
+					ProdottoDaModificare.NomeProdotto = datiProdottoModifica.ProdottoNome;
+				}
 
 
-		//		if (carrello != null && carrello.Prodotti != null)
-		//		{
+				if (datiProdottoModifica.prodottoPrezzo == "")
+				{
+					ProdottoDaModificare.PrezzoProdotto = ProdottoDaModificare.PrezzoProdotto;
+				}
+				else
+				{
+					ProdottoDaModificare.PrezzoProdotto = Convert.ToDouble(datiProdottoModifica.prodottoPrezzo);
+				}
 
-		//			if (ModelState.IsValid)
-		//			{
-		//				foreach (var prodotto in carrello.Prodotti)
-		//				{
+				if (datiProdottoModifica.ProdottoDescrizione == "")
+				{
+					ProdottoDaModificare.Descrizione = ProdottoDaModificare.Descrizione;
+				}
+				else
+				{
+					ProdottoDaModificare.Descrizione = datiProdottoModifica.ProdottoDescrizione;
+				}
 
-		//					ProdottoVeduto prodottoVenduto = new ProdottoVeduto()
-		//					{
-		//						IdProdotto = prodotto.IdProdotto,
-		//						IdUtente = Convert.ToInt32(userIdFromClaimToken),
-		//						Quantita = prodotto.quantita,
-		//						Data = DateTime.Now,
-		//						PrezzoTotTransazione = prodotto.prezzoProdotto * prodotto.quantita
-		//					};
 
-		//					_context.ProdottiVenduti.Add(prodottoVenduto);
-		//					_context.SaveChanges();
+				_context.Prodotti.Update(ProdottoDaModificare);
+				await _context.SaveChangesAsync();
 
-		//				}
-		//				return Ok();
-		//			}
-		//			return BadRequest("modello non valido.");
+				return Ok(new { message = "Prodotto Modificato con successo." });
+			}
 
-		//		}
+			return BadRequest();
+		}
 
-		//		return BadRequest("carrello vuoto");
+		[HttpPost("ModificaImmagine/{idProdotto}")]
+		public async Task<IActionResult> ModificaImmagineProdotto([FromForm] IFormFile? immagineProdotto)
+		{
+			if (immagineProdotto == null)
+			{
+				return Ok(new { message = "nessun immagine fornita" });
+			}
+		}
 
-		//	}
-
-		//	return Unauthorized();
-
-		//}
-		//// GET: Prodotto/5
-		//[HttpGet("{id}")]
-		//public async Task<ActionResult<Prodotto>> GetProdotto(int id)
-		//{
-		//	var prodotto = await _context.Prodotti.FindAsync(id);
-
-		//	if (prodotto == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//	return prodotto;
-		//}
-
-		//// PUT: Prodotto/5
-		//// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		//[HttpPut("{id}")]
-		//public async Task<IActionResult> PutProdotto(int id, Prodotto prodotto)
-		//{
-		//	if (id != prodotto.IdProdotto)
-		//	{
-		//		return BadRequest();
-		//	}
-
-		//	_context.Entry(prodotto).State = EntityState.Modified;
-
-		//	try
-		//	{
-		//		await _context.SaveChangesAsync();
-		//	}
-		//	catch (DbUpdateConcurrencyException)
-		//	{
-		//		if (!ProdottoExists(id))
-		//		{
-		//			return NotFound();
-		//		}
-		//		else
-		//		{
-		//			throw;
-		//		}
-		//	}
-
-		//	return NoContent();
-		//}
-
-		//// POST: Prodotto
-		//// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		//[HttpPost]
-		//public async Task<ActionResult<Prodotto>> PostProdotto(Prodotto prodotto)
-		//{
-		//	_context.Prodotti.Add(prodotto);
-		//	await _context.SaveChangesAsync();
-
-		//	return CreatedAtAction("GetProdotto", new { id = prodotto.IdProdotto }, prodotto);
-		//}
-
-		//// DELETE: Prodotto/5
-		//[HttpDelete("{id}")]
-		//public async Task<IActionResult> DeleteProdotto(int id)
-		//{
-		//	var prodotto = await _context.Prodotti.FindAsync(id);
-		//	if (prodotto == null)
-		//	{
-		//		return NotFound();
-		//	}
-
-		//	_context.Prodotti.Remove(prodotto);
-		//	await _context.SaveChangesAsync();
-
-		//	return NoContent();
-		//}
-
-		//private bool ProdottoExists(int id)
-		//{
-		//	return _context.Prodotti.Any(e => e.IdProdotto == id);
-		//}
 	}
+	//[HttpPost("CreaProdottoAcquistato")]
+	//public IActionResult ProdottoAcquistatoSuccess([FromBody] CarrelloOttimizzatoDTO carrello)
+	//{
+	//	var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti);
+	//	var usernameClaim = User.FindFirst(JwtRegisteredClaimNames.Name);
+	//	var roleClaim = User.FindFirst(ClaimTypes.Role);
+
+	//	if (userIdClaim != null && usernameClaim != null && roleClaim != null)
+	//	{
+	//		var userIdFromClaimToken = userIdClaim.Value;
+	//		//var usernameFromClaimToken = usernameClaim.Value;
+	//		//var roleFromClaimToken = roleClaim.Value;
+
+
+	//		if (carrello != null && carrello.Prodotti != null)
+	//		{
+
+	//			if (ModelState.IsValid)
+	//			{
+	//				foreach (var prodotto in carrello.Prodotti)
+	//				{
+
+	//					ProdottoVeduto prodottoVenduto = new ProdottoVeduto()
+	//					{
+	//						IdProdotto = prodotto.IdProdotto,
+	//						IdUtente = Convert.ToInt32(userIdFromClaimToken),
+	//						Quantita = prodotto.quantita,
+	//						Data = DateTime.Now,
+	//						PrezzoTotTransazione = prodotto.prezzoProdotto * prodotto.quantita
+	//					};
+
+	//					_context.ProdottiVenduti.Add(prodottoVenduto);
+	//					_context.SaveChanges();
+
+	//				}
+	//				return Ok();
+	//			}
+	//			return BadRequest("modello non valido.");
+
+	//		}
+
+	//		return BadRequest("carrello vuoto");
+
+	//	}
+
+	//	return Unauthorized();
+
+	//}
+	//// GET: Prodotto/5
+	//[HttpGet("{id}")]
+	//public async Task<ActionResult<Prodotto>> GetProdotto(int id)
+	//{
+	//	var prodotto = await _context.Prodotti.FindAsync(id);
+
+	//	if (prodotto == null)
+	//	{
+	//		return NotFound();
+	//	}
+
+	//	return prodotto;
+	//}
+
+	//// PUT: Prodotto/5
+	//// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+	//[HttpPut("{id}")]
+	//public async Task<IActionResult> PutProdotto(int id, Prodotto prodotto)
+	//{
+	//	if (id != prodotto.IdProdotto)
+	//	{
+	//		return BadRequest();
+	//	}
+
+	//	_context.Entry(prodotto).State = EntityState.Modified;
+
+	//	try
+	//	{
+	//		await _context.SaveChangesAsync();
+	//	}
+	//	catch (DbUpdateConcurrencyException)
+	//	{
+	//		if (!ProdottoExists(id))
+	//		{
+	//			return NotFound();
+	//		}
+	//		else
+	//		{
+	//			throw;
+	//		}
+	//	}
+
+	//	return NoContent();
+	//}
+
+	//// POST: Prodotto
+	//// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+	//[HttpPost]
+	//public async Task<ActionResult<Prodotto>> PostProdotto(Prodotto prodotto)
+	//{
+	//	_context.Prodotti.Add(prodotto);
+	//	await _context.SaveChangesAsync();
+
+	//	return CreatedAtAction("GetProdotto", new { id = prodotto.IdProdotto }, prodotto);
+	//}
+
+	//// DELETE: Prodotto/5
+	//[HttpDelete("{id}")]
+	//public async Task<IActionResult> DeleteProdotto(int id)
+	//{
+	//	var prodotto = await _context.Prodotti.FindAsync(id);
+	//	if (prodotto == null)
+	//	{
+	//		return NotFound();
+	//	}
+
+	//	_context.Prodotti.Remove(prodotto);
+	//	await _context.SaveChangesAsync();
+
+	//	return NoContent();
+	//}
+
+	//private bool ProdottoExists(int id)
+	//{
+	//	return _context.Prodotti.Any(e => e.IdProdotto == id);
+	//}
 }
+
 
