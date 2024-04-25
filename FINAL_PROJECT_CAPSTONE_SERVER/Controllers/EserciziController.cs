@@ -20,6 +20,12 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			_context = context;
 		}
 
+		[HttpGet("ListAllExercise")]
+		public async Task<IActionResult> listaTuttiEsercizi()
+		{
+			var ListaTuttiEsercizi = await _context.Esercizi.ToListAsync();
+			return Ok(ListaTuttiEsercizi);
+		}
 
 
 		[HttpGet("list/{parteCorpo?}/{difficolta?}/{tipologia}")]

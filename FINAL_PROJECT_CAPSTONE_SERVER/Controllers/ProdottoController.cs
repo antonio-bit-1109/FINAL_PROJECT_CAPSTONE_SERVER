@@ -168,139 +168,43 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		}
 
 		[HttpPost("ModificaImmagine/{idProdotto}")]
-		public async Task<IActionResult> ModificaImmagineProdotto([FromForm] IFormFile? immagineProdotto)
+		public async Task<IActionResult> ModificaImmagineProdotto([FromForm] IFormFile? immagineProdottoModifica, [FromRoute] int idProdotto)
 		{
-			if (immagineProdotto == null)
+			if (immagineProdottoModifica == null)
 			{
-				return Ok(new { message = "nessun immagine fornita" });
+				return Ok(new { message = "nessun immagine fornita." });
 			}
+
+
+			if (ModelState.IsValid)
+			{
+				var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+				var fileName = Path.GetRandomFileName() + Path.GetExtension(immagineProdottoModifica.FileName);
+				var imagePath = Path.Combine(wwwrootPath, "img-prodotti", fileName);
+
+				using (var stream = new FileStream(imagePath, FileMode.Create))
+				{
+					await immagineProdottoModifica.CopyToAsync(stream);
+				}
+
+				var ProdottoDaMOdificare = await _context.Prodotti.FindAsync(idProdotto);
+
+				if (ProdottoDaMOdificare != null)
+				{
+					ProdottoDaMOdificare.ImmagineProdotto = fileName;
+					await _context.SaveChangesAsync();
+
+					return Ok();
+				}
+
+				return BadRequest(new { messaggio = "Prodotto Da modificare è null." });
+			}
+			return BadRequest(new { messaggio = "Modello non valido." });
+
 		}
 
 	}
-	//[HttpPost("CreaProdottoAcquistato")]
-	//public IActionResult ProdottoAcquistatoSuccess([FromBody] CarrelloOttimizzatoDTO carrello)
-	//{
-	//	var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti);
-	//	var usernameClaim = User.FindFirst(JwtRegisteredClaimNames.Name);
-	//	var roleClaim = User.FindFirst(ClaimTypes.Role);
 
-	//	if (userIdClaim != null && usernameClaim != null && roleClaim != null)
-	//	{
-	//		var userIdFromClaimToken = userIdClaim.Value;
-	//		//var usernameFromClaimToken = usernameClaim.Value;
-	//		//var roleFromClaimToken = roleClaim.Value;
-
-
-	//		if (carrello != null && carrello.Prodotti != null)
-	//		{
-
-	//			if (ModelState.IsValid)
-	//			{
-	//				foreach (var prodotto in carrello.Prodotti)
-	//				{
-
-	//					ProdottoVeduto prodottoVenduto = new ProdottoVeduto()
-	//					{
-	//						IdProdotto = prodotto.IdProdotto,
-	//						IdUtente = Convert.ToInt32(userIdFromClaimToken),
-	//						Quantita = prodotto.quantita,
-	//						Data = DateTime.Now,
-	//						PrezzoTotTransazione = prodotto.prezzoProdotto * prodotto.quantita
-	//					};
-
-	//					_context.ProdottiVenduti.Add(prodottoVenduto);
-	//					_context.SaveChanges();
-
-	//				}
-	//				return Ok();
-	//			}
-	//			return BadRequest("modello non valido.");
-
-	//		}
-
-	//		return BadRequest("carrello vuoto");
-
-	//	}
-
-	//	return Unauthorized();
-
-	//}
-	//// GET: Prodotto/5
-	//[HttpGet("{id}")]
-	//public async Task<ActionResult<Prodotto>> GetProdotto(int id)
-	//{
-	//	var prodotto = await _context.Prodotti.FindAsync(id);
-
-	//	if (prodotto == null)
-	//	{
-	//		return NotFound();
-	//	}
-
-	//	return prodotto;
-	//}
-
-	//// PUT: Prodotto/5
-	//// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-	//[HttpPut("{id}")]
-	//public async Task<IActionResult> PutProdotto(int id, Prodotto prodotto)
-	//{
-	//	if (id != prodotto.IdProdotto)
-	//	{
-	//		return BadRequest();
-	//	}
-
-	//	_context.Entry(prodotto).State = EntityState.Modified;
-
-	//	try
-	//	{
-	//		await _context.SaveChangesAsync();
-	//	}
-	//	catch (DbUpdateConcurrencyException)
-	//	{
-	//		if (!ProdottoExists(id))
-	//		{
-	//			return NotFound();
-	//		}
-	//		else
-	//		{
-	//			throw;
-	//		}
-	//	}
-
-	//	return NoContent();
-	//}
-
-	//// POST: Prodotto
-	//// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-	//[HttpPost]
-	//public async Task<ActionResult<Prodotto>> PostProdotto(Prodotto prodotto)
-	//{
-	//	_context.Prodotti.Add(prodotto);
-	//	await _context.SaveChangesAsync();
-
-	//	return CreatedAtAction("GetProdotto", new { id = prodotto.IdProdotto }, prodotto);
-	//}
-
-	//// DELETE: Prodotto/5
-	//[HttpDelete("{id}")]
-	//public async Task<IActionResult> DeleteProdotto(int id)
-	//{
-	//	var prodotto = await _context.Prodotti.FindAsync(id);
-	//	if (prodotto == null)
-	//	{
-	//		return NotFound();
-	//	}
-
-	//	_context.Prodotti.Remove(prodotto);
-	//	await _context.SaveChangesAsync();
-
-	//	return NoContent();
-	//}
-
-	//private bool ProdottoExists(int id)
-	//{
-	//	return _context.Prodotti.Any(e => e.IdProdotto == id);
-	//}
 }
 
 
