@@ -129,34 +129,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					return BadRequest();
 				}
 
-				if (datiProdottoModifica.ProdottoNome == "")
-				{
-					ProdottoDaModificare.NomeProdotto = ProdottoDaModificare.NomeProdotto;
-				}
-				else
-				{
-					ProdottoDaModificare.NomeProdotto = datiProdottoModifica.ProdottoNome;
-				}
-
-
-				if (datiProdottoModifica.prodottoPrezzo == "")
-				{
-					ProdottoDaModificare.PrezzoProdotto = ProdottoDaModificare.PrezzoProdotto;
-				}
-				else
-				{
-					ProdottoDaModificare.PrezzoProdotto = Convert.ToDouble(datiProdottoModifica.prodottoPrezzo);
-				}
-
-				if (datiProdottoModifica.ProdottoDescrizione == "")
-				{
-					ProdottoDaModificare.Descrizione = ProdottoDaModificare.Descrizione;
-				}
-				else
-				{
-					ProdottoDaModificare.Descrizione = datiProdottoModifica.ProdottoDescrizione;
-				}
-
+				ProdottoDaModificare.NomeProdotto = datiProdottoModifica.ProdottoNome;
+				ProdottoDaModificare.PrezzoProdotto = Convert.ToDouble(datiProdottoModifica.prodottoPrezzo);
+				ProdottoDaModificare.Descrizione = datiProdottoModifica.ProdottoDescrizione;
 
 				_context.Prodotti.Update(ProdottoDaModificare);
 				await _context.SaveChangesAsync();
