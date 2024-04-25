@@ -159,5 +159,20 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			}
 			return BadRequest();
 		}
+
+
+		[HttpDelete("cancellaEsercizio/{idEsercizio}")]
+		public async Task<IActionResult> deleteEsercizio([FromRoute] int idEsercizio)
+		{
+			var EsercizioDaCancellare = await _context.Esercizi.FindAsync(idEsercizio);
+
+			if (EsercizioDaCancellare == null)
+			{
+				return BadRequest(new { message = "nessun esercizio trovato." });
+			}
+			_context.Remove(EsercizioDaCancellare);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
 	}
 }
