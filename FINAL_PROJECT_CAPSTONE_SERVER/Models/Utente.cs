@@ -38,6 +38,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Models
 
 		public bool IsPremium { get; set; } = false;
 
+		public bool IsBonusFounded { get; set; } = false;
+
 		public DateTime? DataInizioAbbonamento { get; set; }
 		public DateTime? DataFineAbbonamento { get; set; }
 

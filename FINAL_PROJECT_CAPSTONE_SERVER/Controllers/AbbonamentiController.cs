@@ -172,7 +172,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					utente.DataInizioAbbonamento = null;
 					utente.DataFineAbbonamento = null;
 					_db.Utenti.Update(utente);
-					await _db.SaveChangesAsync();
+
 
 					AbbonamentoSottoscritto.IsActive = false;
 					AbbonamentoSottoscritto.DurataAbbonamento = 0;

@@ -20,6 +20,21 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		[HttpPost("CreazioneAbbonamentoEasterEgg")]
 		public async Task<IActionResult> CreaAbbonamentoRegalo()
 		{
+			var IdutenteLoggato = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+			var utente = await _db.Utenti.FindAsync(Convert.ToInt32(IdutenteLoggato));
+
+			if (utente == null)
+			{
+				return BadRequest();
+			}
+
+			if (utente != null)
+			{
+				if (utente.IsBonusFounded == true)
+				{
+					return Ok(new { message = "Hai già riscosso il tuo abbonamento bonus. NON FARE IL FURBO!" });
+				}
+			}
 
 			Abbonamento abbonamentoEasterEgg = new Abbonamento
 			{
@@ -61,6 +76,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			if (UtenteLoggato.DataInizioAbbonamento != null && UtenteLoggato.DataFineAbbonamento != null && UtenteLoggato.IdAbbonamento != null)
 			{
 				UtenteLoggato.DataFineAbbonamento = UtenteLoggato.DataFineAbbonamento.Value.AddDays(5);
+				UtenteLoggato.IsBonusFounded = true;
 				_db.Utenti.Update(UtenteLoggato);
 
 				var Abbonamentocreatoprima = await _db.Abbonamenti.FindAsync(idAbbonamento);
@@ -84,6 +100,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 				UtenteLoggato.DataInizioAbbonamento = DateTime.Now;
 				UtenteLoggato.DataFineAbbonamento = DateTime.Now.AddDays(5);
 				UtenteLoggato.IsPremium = true;
+				UtenteLoggato.IsBonusFounded = true;
 
 				_db.Utenti.Update(UtenteLoggato);
 				await _db.SaveChangesAsync();
