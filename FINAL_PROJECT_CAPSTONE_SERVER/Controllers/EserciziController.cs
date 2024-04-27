@@ -174,5 +174,68 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			await _context.SaveChangesAsync();
 			return Ok();
 		}
+
+
+		[HttpPost("modificaEsercizio/{idEsercizio}")]
+		public async Task<IActionResult> editEsercizio([FromRoute] int idEsercizio, EditEsercizioDTO datiEsercizio)
+		{
+			if (ModelState.IsValid)
+			{
+				var esercizioDamodificare = await _context.Esercizi.FindAsync(idEsercizio);
+
+				if (esercizioDamodificare == null)
+				{
+					return StatusCode(500, "Esercizio non trovato nel db.");
+				}
+
+				esercizioDamodificare.NomeEsercizio = datiEsercizio.nomeEsercizio;
+				esercizioDamodificare.DescrizioneEsercizio = datiEsercizio.descrizioneEsercizio;
+				esercizioDamodificare.Difficolta = datiEsercizio.difficoltaEsercizio;
+				esercizioDamodificare.IsStrenght = datiEsercizio.IsStrenght;
+				esercizioDamodificare.TempoRecupero = datiEsercizio.tempoRecupero;
+				esercizioDamodificare.Serie = datiEsercizio.Serie;
+				esercizioDamodificare.Ripetizioni = datiEsercizio.ripetizioni;
+				esercizioDamodificare.ParteDelCorpoAllenata = datiEsercizio.parteDelCorpoAllenata;
+				esercizioDamodificare.MET = datiEsercizio.met;
+
+				_context.Esercizi.Update(esercizioDamodificare);
+				await _context.SaveChangesAsync();
+
+				return Ok(esercizioDamodificare.IdEsercizio);
+			}
+
+			return BadRequest();
+		}
+
+		[HttpPost("modificaImmagine/{idEsercizio}")]
+		public async Task<IActionResult> modificaImmagine([FromRoute] int idEsercizio, IFormFile? immagineEsercizio)
+		{
+			if (immagineEsercizio == null)
+			{
+				return Ok(new { message = "nessuna immagine fornita." });
+			}
+
+
+			var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+			var fileName = Path.GetRandomFileName() + Path.GetExtension(immagineEsercizio.FileName);
+			var imagePath = Path.Combine(wwwrootPath, "img-esercizi", fileName);
+
+			using (var stream = new FileStream(imagePath, FileMode.Create))
+			{
+				await immagineEsercizio.CopyToAsync(stream);
+			}
+
+			var Esercizio = await _context.Esercizi.FindAsync(idEsercizio);
+
+			if (Esercizio == null)
+			{
+				return StatusCode(500, "esercizio non trovato nel db.");
+			}
+
+			Esercizio.ImmagineEsercizio = fileName;
+			_context.Esercizi.Update(Esercizio);
+			await _context.SaveChangesAsync();
+			return Ok(new { message = "immagine esercizio caricata correttamente." });
+		}
 	}
 }
