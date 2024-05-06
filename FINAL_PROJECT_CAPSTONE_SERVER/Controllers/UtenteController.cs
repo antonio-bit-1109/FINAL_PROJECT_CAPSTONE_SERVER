@@ -198,7 +198,6 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			return BadRequest();
 		}
 
-
 		[HttpDelete("cancellaAccount/{idUtente}")]
 		public async Task<IActionResult> deleteAccount(int idUtente)
 		{
@@ -223,6 +222,41 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			}
 
 			return BadRequest();
+		}
+
+		[HttpGet("GetTuttiUtenti")]
+		public async Task<IActionResult> tuttiUtentiApp()
+		{
+			try
+			{
+				var TuttiUtenti = await _db.Utenti.ToListAsync();
+				return Ok(TuttiUtenti);
+			}
+			catch (Exception ex) { return BadRequest(new { message = ex }); }
+		}
+
+
+		[HttpDelete("deleteAsAdmin/{idUtente}")]
+		public async Task<IActionResult> deleteComeAdmin(int idUtente)
+		{
+
+			try
+			{
+				var utenteDaCancellare = await _db.Utenti.FirstOrDefaultAsync();
+
+				if (utenteDaCancellare == null)
+				{
+					return BadRequest(new { message = "l'utente non esiste." });
+				}
+				_db.Remove(utenteDaCancellare);
+				await _db.SaveChangesAsync();
+				return Ok();
+
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = ex });
+			}
 		}
 	}
 }

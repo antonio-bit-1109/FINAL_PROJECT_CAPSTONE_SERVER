@@ -112,7 +112,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		}
 
 		[HttpPost("ModificaProdotto/{idProdotto}")]
-		public async Task<IActionResult> editProdotto([FromBody] ModificaProdottoDTO datiProdottoModifica, [FromRoute] int idProdotto)
+		public async Task<IActionResult> EditProdotto([FromBody] ModificaProdottoDTO datiProdottoModifica, [FromRoute] int idProdotto)
 		{
 			if (datiProdottoModifica == null)
 			{
@@ -129,9 +129,9 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					return BadRequest();
 				}
 
-				ProdottoDaModificare.NomeProdotto = datiProdottoModifica.ProdottoNome;
-				ProdottoDaModificare.PrezzoProdotto = Convert.ToDouble(datiProdottoModifica.prodottoPrezzo);
-				ProdottoDaModificare.Descrizione = datiProdottoModifica.ProdottoDescrizione;
+				ProdottoDaModificare.NomeProdotto = datiProdottoModifica.nomeProdotto;
+				ProdottoDaModificare.PrezzoProdotto = Convert.ToDouble(datiProdottoModifica.PrezzoProdotto);
+				ProdottoDaModificare.Descrizione = datiProdottoModifica.DescrizioneProdotto;
 
 				_context.Prodotti.Update(ProdottoDaModificare);
 				await _context.SaveChangesAsync();
@@ -142,10 +142,14 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			return BadRequest();
 		}
 
+
+
+
+
 		[HttpPost("ModificaImmagine/{idProdotto}")]
-		public async Task<IActionResult> ModificaImmagineProdotto([FromForm] IFormFile? immagineProdottoModifica, [FromRoute] int idProdotto)
+		public async Task<IActionResult> ModificaImmagineProdotto([FromForm] IFormFile? immagineProdotto, [FromRoute] int idProdotto)
 		{
-			if (immagineProdottoModifica == null)
+			if (immagineProdotto == null)
 			{
 				return Ok(new { message = "nessun immagine fornita." });
 			}
@@ -154,12 +158,12 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			if (ModelState.IsValid)
 			{
 				var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-				var fileName = Path.GetRandomFileName() + Path.GetExtension(immagineProdottoModifica.FileName);
+				var fileName = Path.GetRandomFileName() + Path.GetExtension(immagineProdotto.FileName);
 				var imagePath = Path.Combine(wwwrootPath, "img-prodotti", fileName);
 
 				using (var stream = new FileStream(imagePath, FileMode.Create))
 				{
-					await immagineProdottoModifica.CopyToAsync(stream);
+					await immagineProdotto.CopyToAsync(stream);
 				}
 
 				var ProdottoDaMOdificare = await _context.Prodotti.FindAsync(idProdotto);

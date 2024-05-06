@@ -2,8 +2,8 @@
 {
 	public class ModificaProdottoDTO
 	{
-		public string ProdottoNome { get; set; }
-		public int prodottoPrezzo { get; set; }
-		public string ProdottoDescrizione { get; set; }
+		public string nomeProdotto { get; set; }
+		public int PrezzoProdotto { get; set; }
+		public string DescrizioneProdotto { get; set; }
 	}
 }
