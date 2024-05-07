@@ -190,12 +190,12 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 				esercizioDamodificare.NomeEsercizio = datiEsercizio.nomeEsercizio;
 				esercizioDamodificare.DescrizioneEsercizio = datiEsercizio.descrizioneEsercizio;
-				esercizioDamodificare.Difficolta = datiEsercizio.difficoltaEsercizio;
-				esercizioDamodificare.IsStrenght = datiEsercizio.IsStrenght;
-				esercizioDamodificare.TempoRecupero = datiEsercizio.tempoRecupero;
+				esercizioDamodificare.Difficolta = datiEsercizio.DifficoltaEsercizio;
+				esercizioDamodificare.IsStrenght = datiEsercizio.IsStrength;
+				esercizioDamodificare.TempoRecupero = datiEsercizio.TempoRecupero;
 				esercizioDamodificare.Serie = datiEsercizio.Serie;
-				esercizioDamodificare.Ripetizioni = datiEsercizio.ripetizioni;
-				esercizioDamodificare.ParteDelCorpoAllenata = datiEsercizio.parteDelCorpoAllenata;
+				esercizioDamodificare.Ripetizioni = datiEsercizio.Ripetizioni;
+				esercizioDamodificare.ParteDelCorpoAllenata = datiEsercizio.ParteDelCorpo;
 				esercizioDamodificare.MET = datiEsercizio.met;
 
 				_context.Esercizi.Update(esercizioDamodificare);
