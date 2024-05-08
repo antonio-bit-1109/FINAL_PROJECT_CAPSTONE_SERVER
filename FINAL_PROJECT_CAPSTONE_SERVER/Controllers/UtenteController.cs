@@ -258,5 +258,82 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 				return BadRequest(new { message = ex });
 			}
 		}
+
+
+		[HttpPost("ModificaDatiUtenteAsAdmin/{idUtente}")]
+		public async Task<IActionResult> modificaDatiUtente([FromRoute] int idUtente, [FromBody] DatiUtenteAs_AdminDTO datiUtente)
+		{
+
+
+			var utente = await _db.Utenti.FindAsync(idUtente);
+
+			if (utente == null)
+			{
+				return StatusCode(400, "utente non trovato.");
+			}
+
+			utente.Nome = datiUtente.nomeUtente;
+			utente.Cognome = datiUtente.cognomeUtente;
+			utente.Peso = datiUtente.peso;
+			utente.Altezza = datiUtente.altezza;
+			utente.Email = datiUtente.email;
+			utente.IsBonusFounded = datiUtente.easterEggFounded;
+			utente.IsPremium = datiUtente.UtentePremium;
+
+
+			if (datiUtente.dataInizioAbbonamento == null)
+			{
+				utente.DataInizioAbbonamento = utente.DataInizioAbbonamento;
+			}
+			else
+			{
+				utente.DataInizioAbbonamento = Convert.ToDateTime(datiUtente.dataInizioAbbonamento);
+			}
+
+			if (datiUtente.dataFineAbbonamento == null)
+			{
+				utente.DataFineAbbonamento = utente.DataFineAbbonamento;
+			}
+			else
+			{
+				utente.DataFineAbbonamento = Convert.ToDateTime(datiUtente.dataFineAbbonamento);
+			}
+
+			_db.Update(utente);
+			await _db.SaveChangesAsync();
+			return Ok(new { utente.IdUtente });
+		}
+
+
+		[HttpPost("modificaFotoAs_Admin/{IdUtente}")]
+		public async Task<IActionResult> modificaFoto([FromRoute] int idUtente, IFormFile? immagineUtente)
+		{
+
+			if (immagineUtente == null)
+			{
+				return StatusCode(200, "nessuna immagine fornita.");
+			}
+
+			var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+			var fileName = Path.GetRandomFileName() + Path.GetExtension(immagineUtente.FileName);
+			var imagePath = Path.Combine(wwwrootPath, "img-utenti", fileName);
+
+			using (var stream = new FileStream(imagePath, FileMode.Create))
+			{
+				await immagineUtente.CopyToAsync(stream);
+			}
+			var Utente = await _db.Utenti.FindAsync(Convert.ToInt32(idUtente));
+
+			if (Utente == null)
+			{
+				return StatusCode(400, "nessun utente trovato.");
+			}
+
+			Utente.ImmagineProfilo = fileName;
+			await _db.SaveChangesAsync();
+
+			return Ok();
+
+		}
 	}
 }
