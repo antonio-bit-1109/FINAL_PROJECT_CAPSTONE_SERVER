@@ -75,7 +75,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddTransient<EmailSender>();
 
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
-StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
+//StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
+StripeConfiguration.ApiKey = Environment.GetEnvironmentVariable("Stripe_secretkey");
 
 var app = builder.Build();
 

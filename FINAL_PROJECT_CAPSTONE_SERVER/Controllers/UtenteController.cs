@@ -242,7 +242,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 			try
 			{
-				var utenteDaCancellare = await _db.Utenti.FirstOrDefaultAsync();
+				var utenteDaCancellare = await _db.Utenti.FindAsync(idUtente);
 
 				if (utenteDaCancellare == null)
 				{

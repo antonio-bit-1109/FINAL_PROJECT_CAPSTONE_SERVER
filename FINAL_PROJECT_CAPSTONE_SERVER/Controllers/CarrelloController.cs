@@ -1,16 +1,14 @@
 ﻿using FINAL_PROJECT_CAPSTONE_SERVER.Data;
 using FINAL_PROJECT_CAPSTONE_SERVER.Models;
 using FINAL_PROJECT_CAPSTONE_SERVER.ViewModel;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Stripe.Checkout;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 {
-	[Authorize]
+	//[Authorize]
 	[Route("[controller]")]
 	[ApiController]
 	public class CarrelloController : ControllerBase
@@ -25,12 +23,13 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 			_httpContextAccessor = httpContextAccessor;
 			_configuration = configuration; // Assegna un valore a _configuration
 
-
+			// Imposta la chiave segreta di Stripe
+			//StripeConfiguration.ApiKey = System.Environment.GetEnvironmentVariable("Stripe_secretkey");
 		}
 
 
-		[HttpPost("create-session")]
-		public ActionResult CreateCheckoutSession([FromBody] CreateCheckoutSessionRequest request)
+		[HttpPost("create-session/{idUtente}")]
+		public async Task<ActionResult> CreateCheckoutSession([FromBody] CreateCheckoutSessionRequest request, [FromRoute] int idUtente)
 		{
 			//arrivo DTO carrello ottimizzato 
 
@@ -38,7 +37,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 			// Crea la lista degli articoli per la sessione di checkout
 			var lineItems = request
-				.ListaItems.Select(item => new SessionLineItemOptions
+				.CarrelloOttimizzato.Select(item => new SessionLineItemOptions
 				{
 
 					PriceData = new SessionLineItemPriceDataOptions
@@ -49,6 +48,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 						{
 							Name = item.nomeProdotto,
 							Description = item.descrizione,
+							//Images = new List<string> { item}
 						},
 					},
 					Quantity = item.quantita, // Modifica la quantità se necessario
@@ -57,18 +57,25 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 				.ToList();
 
 			//come ricavo email dal token 
-			var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+			var utente = await _context.Utenti.FindAsync(idUtente);
 
-			if (userEmail == null)
+			if (utente == null)
 			{
-				userEmail = "default@default.com";
+				return StatusCode(400, "nessun utente trovato");
+			}
+
+			var emailUtente = utente.Email;
+
+			if (emailUtente == null)
+			{
+				emailUtente = "default@default.com";
 			}
 
 			var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
 
 			List<int> IdprodottiVenduti = new List<int>();
 
-			foreach (var item in request.ListaItems)
+			foreach (var item in request.CarrelloOttimizzato)
 			{
 				ProdottoVeduto prodottoVenduto = new ProdottoVeduto
 				{
@@ -95,7 +102,7 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 					{ "idProdottiVenduti" ,IdprodottiVendutiString }
 				},
 				PaymentMethodTypes = new List<string> { "card" },
-				CustomerEmail = userEmail,
+				CustomerEmail = emailUtente,
 				LineItems = lineItems,
 				Mode = "payment",
 				SuccessUrl = domain + "pagamentoSuccess",
@@ -140,6 +147,22 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 
 
 
+			return BadRequest();
+		}
+
+		[HttpGet("variabileAmbiente")]
+		public async Task<IActionResult> rivelachiave()
+		{
+			try
+			{
+				var stripeKey = Environment.GetEnvironmentVariable("Stripe_secretkey");
+				Console.WriteLine($"Stripe key: {stripeKey}");
+				return Ok(new { message = stripeKey });
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Errore: {ex.Message}");
+			}
 			return BadRequest();
 		}
 	}

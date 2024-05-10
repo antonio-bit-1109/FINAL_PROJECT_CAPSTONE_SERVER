@@ -17,11 +17,14 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		private readonly IConfiguration _configuration;
 		private readonly EmailSender _emailsender;
 
+
 		public AbbonamentiController(ApplicationDbContext db, IConfiguration configuration, EmailSender emailsender)
 		{
 			_db = db;
 			_configuration = configuration;
 			_emailsender = emailsender;
+
+
 		}
 
 
@@ -198,7 +201,8 @@ namespace FINAL_PROJECT_CAPSTONE_SERVER.Controllers
 		{
 			var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
 			var stripeSignatureHeader = Request.Headers["Stripe-Signature"];
-			var secret = _configuration["Stripe:WebhookSecret"];
+			//var secret = _configuration["Stripe:WebhookSecret"];
+			var secret = Environment.GetEnvironmentVariable("WebHookSecret");
 
 			try
 			{

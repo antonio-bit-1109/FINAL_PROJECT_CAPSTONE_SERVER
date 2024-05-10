@@ -2,6 +2,6 @@
 {
 	public class CreateCheckoutSessionRequest
 	{
-		public List<ListaItems> ListaItems { get; set; }
+		public List<ListaItems> CarrelloOttimizzato { get; set; }
 	}
 }

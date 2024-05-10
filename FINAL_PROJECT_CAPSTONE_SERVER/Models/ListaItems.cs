@@ -10,5 +10,7 @@
 		public string descrizione { get; set; }
 
 		public int quantita { get; set; }
+
+		public string immagineProdotto { get; set; }
 	}
 }
